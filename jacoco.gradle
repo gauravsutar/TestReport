@@ -1,0 +1,75 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion "$jacocoVersion"
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest', 'createDebugCoverageReport']) {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports"
+    reports {
+        xml.enabled = true
+        html.enabled = true
+        html.destination file("${rootProject.buildDir}/coverage-report")
+    }
+    def fileFilter = ['**/R.class',
+                      '**/R$*.class',
+                      '**/BuildConfig.*',
+                      '**/Manifest*.*',
+                      '**/*Test*.*', // Do not add Test keyword to any class except testcases
+                      'android/**/*.*',
+                      '**/com/example/databinding/*',
+                      '**/com/example/generated/callback/*',
+                      '**/android/databinding/*',
+                      '**/androidx/databinding/*',
+                      '**/di/module/*',
+                      '**/*MapperImpl*.*',
+                      '**/*$ViewInjector*.*',
+                      '**/*$ViewBinder*.*',
+                      '**/Lambda$*.class', //Retrolambda
+                      '**/Lambda.class',
+                      '**/*Lambda.class',
+                      '**/*Lambda*.class',
+                      '**/*Lambda*.*',
+                      '**/*Companion*.*',
+                      '**/*Module.*',
+                      '**/*Builder.*',
+                      '**/*BR*.*',
+                      '**/*Dagger*.*',
+                      '**/*_MembersInjector.class', //Dagger2 generated code
+                      '**/*_MembersInjector*.*', //Dagger2 generated code
+                      '**/*_*Factory*.*', //Dagger2 generated code
+                      '**/*_Provide*Factory*.*',
+                      '**/*Component*.*', //Dagger2 generated code
+                      '**/*Module*.*', //Dagger2 generated code
+                      '**/*Extensions*.*',
+                      '**/*$Result.*', /* filtering `sealed` and `data` classes */
+                      '**/*$Result$*.*', /* filtering `sealed` and `data` classes */
+                      '**/*Parcel.class',
+                      '**/*$CREATOR.class',
+                      '**/AutoValue_*.*',
+                      '**/*JavascriptBridge.class',
+    ]
+
+    def javaSrc = []
+    def kotlinSrc = []
+    def javaClasses = []
+    def kotlinClasses = []
+    def execution = []
+
+    rootProject.subprojects.each { proj ->
+        javaClasses << fileTree(dir: "$proj.buildDir/intermediates/javac/debug", excludes: fileFilter)
+        kotlinClasses << fileTree(dir: "$proj.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
+        javaSrc << "$proj.projectDir/src/main/java"
+        kotlinSrc << "$proj.projectDir/src/main/kotlin"
+        execution << fileTree(dir: proj.buildDir, includes: ['**/*.exec', '**/*.ec'])
+    }
+
+    sourceDirectories = files([javaSrc, kotlinSrc])
+    classDirectories = files([javaClasses, kotlinClasses])
+    executionData = files(execution)
+
+    doLast() {
+        print "file://${reports.html.destination}/index.html"
+    }
+}

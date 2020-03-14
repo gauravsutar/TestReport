@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TestReport</string>
+    <string name="hint">Hint</string>
+</resources>
