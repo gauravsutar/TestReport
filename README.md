@@ -1,2 +1,3 @@
 # TestReport
-This project help us to have a Jacoco and Sonarqube integrated in. Also will help us for test cases
+This project basically help to setup a Jacoco and Sonarqube.
+Note: (latest gradle version may affect the way jacoco and sonarqube works.)
