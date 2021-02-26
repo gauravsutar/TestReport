@@ -1,48 +1,32 @@
 apply plugin: 'org.sonarqube'
 
-ext {
-    SONAR_HOST = "http://localhost:9000/"
-}
-sonarqube() {
-    androidVariant 'debug'
+sonarqube {
     properties {
-        property "sonar.verbose", true
-        /* SonarQube needs to be informed about your libraries and the android.jar to understand that methods like
-        * onResume() is called by the Android framework. Without that information SonarQube will very likely create warnings
-        * that those methods are never used and they should be removed. Same applies for libraries where parent classes
-        * are required to understand how a class works and is used. */
-
-        def libraries = project.android.sdkDirectory.getPath() + "/platforms/android-28/android.jar," +
-                "${project.buildDir}/intermediates/exploded-aar/**/classes.jar"
-        property "sonar.projectName", (String) android.defaultConfig.applicationId
-        property "sonar.projectKey", android.defaultConfig.applicationId + android.defaultConfig.versionName
+        property "sonar.projectName", "Test App" //(String) android.defaultConfig.applicationId
+        property "sonar.projectKey", "testApp"//android.defaultConfig.applicationId + android.defaultConfig.versionName
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.host.url", SONAR_HOST
+        property "sonar.host.url", "http://localhost:9000/"
+        property "sonar.login", "cfe1185fb267c9e17f2f63041802fd5e94011e72" // local sonar token
         property "sonar.projectVersion", android.defaultConfig.versionName
-        property "sonar.issuesReport.html.enable", "true"
-        property "sonar.issuesReport.console.enable", "true"
 
         //property "sonar.sources", "${project.projectDir}/src/main/java"
         //property "sonar.binaries", "${project.buildDir}/intermediates/classes/debug"
-        //property "sonar.libraries", libraries
-
         //property "sonar.java.binaries", "${project.buildDir}/intermediates/javac/debug/classes,${project.buildDir}/tmp/kotlin-classes/debug"
-        //property "sonar.java.libraries", libraries
 
         property "detekt.sonar.kotlin.config.path", "$rootDir/default-detekt-config.yml"
 
-        //property "sonar.tests", "${project.projectDir}/src/test/java,${project.projectDir}/src/androidTest/java"
+        property "sonar.tests", "${project.projectDir}/src/test/java,${project.projectDir}/src/androidTest/java"
         //property "sonar.java.test.binaries", "${project.buildDir}/intermediates/classes/debug"
         //property "sonar.java.test.libraries", libraries
 
         //property "sonar.test.inclusions", "**/*Test*/**"
-        //property "sonar.exclusions", "**/*.png," + "*.iml," + "**/*generated*," + "*.json," + "**/.gradle/**," + "**/R.class"
+        property "sonar.exclusions", "**/*.png," + "*.iml," + "**/*generated*," + "*.json," + "**/.gradle/**," + "**/R.class"
 
-        //property "sonar.import_unknown_files", true
-        //property "sonar.android.lint.report", "${project.buildDir}/outputs/lint-results"
-        //property "sonar.jacoco.reportPath", fileTree(dir: project.projectDir, includes: ['**/*.exec '])
         property "sonar.java.coveragePlugin", "jacoco"
         property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/jacocoTestReport/jacocoTestReport.xml"
-        //property "sonar.report.export.path", "${project.projectDir}/sonar-report.json"
+        property "sonar.junit.reportPaths", "${project.buildDir}/outputs/androidTest-results/connected,${project.buildDir}/test-results/testDebugUnitTest"
+        property "sonar.android.lint.report", "${project.buildDir}/outputs/lint-results"
     }
 }
+//project.parent.tasks["sonarqube"].dependsOn project.name + ":jacocoTestReport" //sonarqube depends on jacocoTestReport
+//./gradlew sonarqube -Dsonar.host.url=http://localhost:9000 -Dsonar.projectKey=AREF-11609 --> command to run sonarqube

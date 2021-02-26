@@ -1,35 +1,35 @@
 package com.demo.testreport
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.webkit.URLUtil
-import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
+import androidx.appcompat.app.AppCompatActivity
+import com.demo.testreport.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(), MainContract {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    lateinit var presenter: MainPresenter
-    lateinit var fooPresenter: FooPresenter
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        presenter = MainPresenter(this)
-        fooPresenter = FooPresenter()
-        btn1.setOnClickListener {
-            presenter.login(txt1.text.toString())
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
+        binding.btnChangeText.setOnClickListener(this)
+        binding.btnChangeActivity.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View?) {
+        val txt = binding.edtInput.text.toString()
+        when (v?.id) {
+            R.id.btnChangeText ->
+                binding.txtToBeChanged.text = txt
+            R.id.btnChangeActivity -> {
+                val intent = Intent(this, ShowTextActivity::class.java)
+                intent.putExtra(ShowTextActivity.KEY_EXTRA_MESSAGE, txt)
+                startActivity(intent)
+            }
         }
-        val steList = ArrayList<String>()
-    }
-
-    override fun onLoginSuccess(str: String) {
-        btn1.text = "Success"
-        txtError.visibility = View.GONE
-    }
-
-    override fun onLoginFailure(error: String) {
-        btn1.text = "retry"
-        txtError.visibility = View.VISIBLE
     }
 }
