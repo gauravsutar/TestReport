@@ -1,7 +1,7 @@
 package com.example.aar_lib
 
 class
-FooLibKotlin {
+FooLibKotlinOuter {
     fun foo(str: String): String {
         return when (str) {
             "1" -> {

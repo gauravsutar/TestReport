@@ -5,6 +5,8 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.rules.activityScenarioRule
@@ -49,6 +51,14 @@ class MainActivityTest {
 
         // This view is in a different Activity, no need to tell Espresso.
         onView(withId(R.id.txtMessage)).check(matches(withText(STRING_TO_BE_TYPED)))
+    }
+
+    @Test
+    fun test_changeText_null() {
+        activityScenarioRule.scenario.onActivity {
+            it.onClick(null)
+        }
+        onView(withId(R.id.edtInput)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)))
     }
 
     companion object {

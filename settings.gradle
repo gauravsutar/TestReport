@@ -1,3 +1,4 @@
 rootProject.name='TestReport'
 include ':app'
 include ':aar-lib'
+include ':aar-lib-sample-config'
