@@ -1,18 +1,19 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply from: '../jacoco.gradle'
-apply from: '../sonarqube.gradle'
+apply from: '../sonarqube_module.gradle'
 
-sonarqube {
-    properties {
-        property "sonar.projectName", "Test Lib"
-        property "sonar.projectKey", "testLib"
-    }
-}
+// This needed when we apply sonarqube.gradle individually to each module and to split project on Sonar server
+//sonarqube {
+//    properties {
+//        property "sonar.projectName", "Test Lib"
+//        property "sonar.projectKey", "testLib"
+//    }
+//}
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 30
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         minSdkVersion 21
@@ -35,6 +36,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     testOptions {

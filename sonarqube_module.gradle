@@ -1,0 +1,8 @@
+// adding this to individual modules, picks correct paths for properties which can not be added at project level.
+sonarqube {
+    properties {
+        property "sonar.tests", "${project.projectDir}/src/test/java,${project.projectDir}/src/androidTest/java"
+        property "sonar.junit.reportPaths", "${project.buildDir}/outputs/androidTest-results/connected,${project.buildDir}/test-results/testDebugUnitTest"
+        property "sonar.java.binaries", "${project.buildDir}/intermediates/javac/debug/classes,${project.buildDir}/tmp/kotlin-classes/debug"
+    }
+}
